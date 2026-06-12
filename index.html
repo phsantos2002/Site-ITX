@@ -298,8 +298,36 @@
     .promo-por span{ font-size:12px; font-weight:600; color:var(--gray); }
     .promo-store{ margin-top:6px; font-family:'Montserrat',sans-serif; font-size:11px; font-weight:600; color:var(--gray); }
 
+    /* LOJAS — rodapé com endereços/contatos */
+    .lojas{
+      margin-top:44px; padding-top:32px;
+      border-top:1px solid var(--border);
+      display:grid; grid-template-columns:1fr 1fr; gap:28px;
+    }
+    .loja h3{
+      font-family:'Oswald',sans-serif; font-size:15px; font-weight:700;
+      text-transform:uppercase; letter-spacing:0.04em; color:var(--orange);
+      margin-bottom:12px;
+    }
+    .loja p{
+      font-family:'Montserrat',sans-serif; font-size:12.5px; font-weight:500;
+      color:var(--gray); line-height:1.65; margin-bottom:8px;
+      display:flex; gap:8px; align-items:flex-start;
+    }
+    .loja p .ico{ flex-shrink:0; }
+    .loja p b{ color:var(--black); font-weight:700; }
+    .loja a{ color:var(--gray); text-decoration:none; font-weight:700; }
+    .loja a:hover{ color:var(--orange); }
+    .lojas-foot{
+      grid-column:1 / -1; text-align:center; margin-top:8px; padding-top:18px;
+      border-top:1px solid var(--border);
+      font-family:'Montserrat',sans-serif; font-size:11px; font-weight:500;
+      color:var(--gray-light);
+    }
+
     @media(max-width:640px){
       h1{ font-size:30px; letter-spacing:1px; }
+      .lojas{ grid-template-columns:1fr; gap:24px; margin-top:36px; }
       .subtitle{ font-size:14px; }
       .promos-head h2{ font-size:25px; }
       .promos{ grid-template-columns:1fr; gap:12px; }
@@ -397,6 +425,27 @@
     </div>
 
   </div>
+
+  <!-- LOJAS FÍSICAS -->
+  <footer class="lojas">
+
+    <div class="loja">
+      <h3>ITX Gamer · Campinas — SP</h3>
+      <p><span class="ico">📍</span> Hall do Supermercado Tauste — Av. dos Imbés, 52, Loja 105 · Alphaville, Campinas — SP · CEP 13097-172</p>
+      <p><span class="ico">🕘</span> <span><b>Seg a Sáb:</b> 09h às 22h &nbsp;·&nbsp; <b>Dom:</b> 09h às 20h</span></p>
+      <p><span class="ico">📞</span> <span><b>Telefone:</b> <a href="tel:+551920188383">(19) 2018-8383</a> &nbsp;·&nbsp; <b>WhatsApp:</b> <a href="https://wa.me/551239337524" target="_blank" rel="noopener">(12) 3933-7524</a></span></p>
+    </div>
+
+    <div class="loja">
+      <h3>ITX Gamer · São José dos Campos — SP</h3>
+      <p><span class="ico">📍</span> Hall do Supermercado Tauste — Av. São João, 2555, Loja 11 · Jardim das Colinas, São José dos Campos — SP</p>
+      <p><span class="ico">🕘</span> <span><b>Seg a Sáb:</b> 09h às 22h &nbsp;·&nbsp; <b>Dom:</b> 09h às 20h</span></p>
+      <p><span class="ico">📞</span> <span><b>Telefone:</b> <a href="tel:+551230423900">(12) 3042-3900</a> &nbsp;·&nbsp; <b>WhatsApp:</b> <a href="https://wa.me/551239337524" target="_blank" rel="noopener">(12) 3933-7524</a></span></p>
+    </div>
+
+    <div class="lojas-foot">© ITX Gamer · Ofertas de hardware, periféricos e acessórios gamer</div>
+
+  </footer>
 
 </div>
 </body>
