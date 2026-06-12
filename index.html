@@ -248,28 +248,61 @@
     .cta-btn:active{ transform:translateY(0); }
     .cta-btn svg{ width:24px; height:24px; flex-shrink:0; }
 
-    /* FEATURES — cards arredondados, sem numeração */
-    .features{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-    .feature{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:26px 22px 24px;
-      display:flex; flex-direction:column; gap:8px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    /* PROMOS — prova social: ofertas que já rolaram no grupo */
+    .promos-head{ text-align:center; margin-bottom:24px; }
+    .promos-head h2{
+      font-family:'Big Shoulders Display',sans-serif;
+      font-size:30px; font-weight:900; text-transform:uppercase;
+      letter-spacing:1px; color:var(--black); line-height:1.1;
     }
-    .feat-label{
-      font-family:'Bebas Neue',sans-serif;
-      font-size:14px; letter-spacing:0.2em;
-      color:var(--orange);
+    .promos-head h2 em{ font-style:normal; color:var(--orange); }
+    .promos-head p{
+      font-family:'Montserrat',sans-serif; font-size:13px; font-weight:600;
+      color:var(--gray-light); margin-top:8px;
     }
-    .feat-title{ font-family:'Oswald',sans-serif; font-size:17px; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; color:var(--black); line-height:1.2; }
-    .feat-text{ font-family:'Montserrat',sans-serif; font-size:13px; font-weight:500; color:var(--gray-light); line-height:1.6; }
+    .promos{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .promo{
+      background:var(--card); border:1px solid var(--border); border-radius:16px;
+      overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.06);
+      display:flex; flex-direction:column;
+    }
+    .promo-media{
+      position:relative;
+      background:linear-gradient(135deg,#E8351A,#C42C14);
+      padding:20px; display:flex; align-items:center; justify-content:center;
+    }
+    .promo-icon{
+      width:88px; height:88px; border-radius:14px; background:#fff;
+      display:flex; align-items:center; justify-content:center; font-size:44px;
+      box-shadow:0 4px 14px rgba(0,0,0,0.20);
+    }
+    .promo-sold{
+      position:absolute; top:10px; left:10px;
+      background:rgba(17,17,17,0.85); color:#fff;
+      font-family:'Oswald',sans-serif; font-size:10px; font-weight:700;
+      letter-spacing:0.08em; text-transform:uppercase;
+      padding:4px 9px; border-radius:6px;
+    }
+    .promo-disc{
+      position:absolute; top:10px; right:10px;
+      background:#111; color:#fff;
+      font-family:'Oswald',sans-serif; font-size:14px; font-weight:700;
+      padding:4px 9px; border-radius:6px;
+    }
+    .promo-body{ padding:16px 16px 18px; display:flex; flex-direction:column; gap:5px; flex:1; }
+    .promo-tag{ font-family:'Bebas Neue',sans-serif; font-size:12px; letter-spacing:0.18em; color:var(--orange); }
+    .promo-name{ font-family:'Oswald',sans-serif; font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:0.02em; color:var(--black); line-height:1.25; min-height:35px; }
+    .promo-de{ font-family:'Montserrat',sans-serif; font-size:12px; font-weight:600; color:var(--gray-light); text-decoration:line-through; margin-top:4px; }
+    .promo-por{ font-family:'Oswald',sans-serif; font-size:25px; font-weight:700; color:#111; line-height:1; }
+    .promo-por span{ font-size:12px; font-weight:600; color:var(--gray); }
+    .promo-store{ margin-top:6px; font-family:'Montserrat',sans-serif; font-size:11px; font-weight:600; color:var(--gray); }
 
     @media(max-width:640px){
       h1{ font-size:30px; letter-spacing:1px; }
       .subtitle{ font-size:14px; }
-      .features{ grid-template-columns:1fr; gap:10px; }
+      .promos-head h2{ font-size:25px; }
+      .promos{ grid-template-columns:1fr; gap:12px; }
+      .promo-name{ min-height:0; }
       .cta-btn{ font-size:18px; padding:20px 36px; width:100%; max-width:380px; }
     }
   </style>
@@ -309,25 +342,57 @@
 
   </div>
 
-  <!-- FEATURES -->
-  <div class="features">
+  <!-- PROMOÇÕES QUE JÁ ROLARAM — prova social -->
+  <div class="promos-head">
+    <h2>Promoções que <em>já rolaram</em> no grupo</h2>
+    <p>Ofertas reais que os membros aproveitaram. Entre e garanta as próximas.</p>
+  </div>
 
-    <div class="feature">
-      <span class="feat-label">Preço</span>
-      <span class="feat-title">Sempre abaixo do mercado</span>
-      <span class="feat-text">Links diretos com desconto real. Sem markup, sem enrolação.</span>
+  <div class="promos">
+
+    <div class="promo">
+      <div class="promo-media">
+        <div class="promo-icon">🪑</div>
+        <span class="promo-sold">Já rolou</span>
+        <span class="promo-disc">-23%</span>
+      </div>
+      <div class="promo-body">
+        <span class="promo-tag">Cadeira Gamer</span>
+        <span class="promo-name">Cougar Armor Titan Pro V2 Gold</span>
+        <span class="promo-de">De R$ 3.499,00</span>
+        <span class="promo-por">R$ 2.699,00 <span>no Pix</span></span>
+        <span class="promo-store">📍 Retirada na loja · SJC e Campinas</span>
+      </div>
     </div>
 
-    <div class="feature">
-      <span class="feat-label">Retirada</span>
-      <span class="feat-title">Ainda mais barato na loja</span>
-      <span class="feat-text">Desconto exclusivo pra quem retira em São José dos Campos ou Campinas.</span>
+    <div class="promo">
+      <div class="promo-media">
+        <div class="promo-icon">🎮</div>
+        <span class="promo-sold">Já rolou</span>
+        <span class="promo-disc">-29%</span>
+      </div>
+      <div class="promo-body">
+        <span class="promo-tag">Controle PS5</span>
+        <span class="promo-name">DualSense Original Sterling Silver</span>
+        <span class="promo-de">De R$ 518,58</span>
+        <span class="promo-por">R$ 369,93 <span>no Pix</span></span>
+        <span class="promo-store">📍 Retirada na loja · SJC e Campinas</span>
+      </div>
     </div>
 
-    <div class="feature">
-      <span class="feat-label">Comunidade</span>
-      <span class="feat-title">Oferta nova, todo dia</span>
-      <span class="feat-text">Hardware, periféricos e acessórios gamer. Direto no grupo, antes de todo mundo.</span>
+    <div class="promo">
+      <div class="promo-media">
+        <div class="promo-icon">⌨️</div>
+        <span class="promo-sold">Open Box</span>
+        <span class="promo-disc">-48%</span>
+      </div>
+      <div class="promo-body">
+        <span class="promo-tag">Teclado Mecânico</span>
+        <span class="promo-name">Logitech G515 TKL RGB Lightsync</span>
+        <span class="promo-de">De R$ 799,90</span>
+        <span class="promo-por">R$ 415,89 <span>no Pix</span></span>
+        <span class="promo-store">📍 Oferta exclusiva loja física</span>
+      </div>
     </div>
 
   </div>
