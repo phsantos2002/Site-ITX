@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ITX Gamer — Grupo de Ofertas</title>
+
+  <!-- ════════════════════════════════════════════════════════════
+       ITX · Meta Pixel + Motor de Rastreamento
+       Pixel ID: 1547627079038261
+       Eventos: PageView · ViewContent · Lead (conversão)
+                Engaged30s/60s · ScrollDepth · CTAView · CTAHover
+       ════════════════════════════════════════════════════════════ -->
+  <script>
+  (function(){
+    var PIXEL_ID = '1547627079038261';
+
+    /* ---------- helpers ---------- */
+    function getCookie(n){ var m=document.cookie.match(new RegExp('(^| )'+n+'=([^;]+)')); return m?decodeURIComponent(m[2]):''; }
+    function setCookie(n,v,days){ var d=new Date(); d.setTime(d.getTime()+days*864e5); document.cookie=n+'='+encodeURIComponent(v)+';expires='+d.toUTCString()+';path=/;SameSite=Lax'; }
+    function genId(p){ return p+'_'+Date.now()+'_'+Math.random().toString(36).slice(2,9); }
+
+    /* ---------- external_id persistente (1st-party, sem dados pessoais) ---------- */
+    var extId='';
+    try{
+      extId = localStorage.getItem('itx_uid') || '';
+      if(!extId){ extId='itx_'+Date.now()+'_'+Math.random().toString(36).slice(2,11); localStorage.setItem('itx_uid', extId); }
+    }catch(e){}
+
+    /* ---------- UTMs + fbclid (persistidos na sessão) ---------- */
+    var params = new URLSearchParams(window.location.search);
+    var UTM_KEYS = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','utm_id'];
+    var utms = {};
+    UTM_KEYS.forEach(function(k){
+      var v = params.get(k) || sessionStorage.getItem(k) || '';
+      if(v){ sessionStorage.setItem(k,v); utms[k]=v; }
+    });
+    var fbclid = params.get('fbclid') || sessionStorage.getItem('fbclid') || '';
+    if(fbclid) sessionStorage.setItem('fbclid', fbclid);
+
+    /* ---------- reconstrói _fbc a partir do fbclid (recupera atribuição) ---------- */
+    var fbc = getCookie('_fbc');
+    if(!fbc && fbclid){ fbc = 'fb.1.'+Date.now()+'.'+fbclid; setCookie('_fbc', fbc, 90); }
+
+    /* ---------- carregador oficial do Meta Pixel ---------- */
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+
+    /* init com Advanced Matching manual (external_id).
+       → Ative também o "Automatic Advanced Matching" no Events Manager. */
+    fbq('init', PIXEL_ID, { external_id: extId });
+
+    /* ---------- pacote base enviado em TODO evento ---------- */
+    function baseParams(eid){
+      return {
+        content_name    :'ITX Gamer — Grupo de Ofertas',
+        content_category:'gaming,ofertas,hardware,perifericos',
+        content_type    :'community_group',
+        utm_source      : utms.utm_source   ||'',
+        utm_medium      : utms.utm_medium   ||'',
+        utm_campaign    : utms.utm_campaign ||'',
+        utm_content     : utms.utm_content  ||'',
+        utm_term        : utms.utm_term     ||'',
+        utm_id          : utms.utm_id       ||'',
+        external_id     : extId,
+        fbclid          : fbclid,
+        fbc             : fbc || getCookie('_fbc'),
+        fbp             : getCookie('_fbp'),
+        event_id        : eid || genId('evt'),
+        source_url      : window.location.href,
+        referrer        : document.referrer||''
+      };
+    }
+
+    /* eventos padrão do Meta (vão por fbq track); o resto é trackCustom */
+    var STD = {PageView:1, ViewContent:1, Lead:1, Contact:1, Subscribe:1, CompleteRegistration:1};
+
+    window._itx = {
+      fired:{},
+      track:function(name, extra, opts){
+        opts = opts||{};
+        if(opts.once && this.fired[name]) return;
+        if(opts.once) this.fired[name]=true;
+        var eid = genId(name);
+        var payload = Object.assign(baseParams(eid), extra||{});
+        if(window.fbq){
+          if(STD[name]) fbq('track', name, payload, {eventID:eid});
+          else fbq('trackCustom', name, payload, {eventID:eid});
+        }
+        window.dataLayer = window.dataLayer||[];
+        dataLayer.push(Object.assign({event:'itx_'+name, event_id:eid}, payload));
+      },
+      init:function(){
+        var self=this;
+
+        /* PageView — roteado aqui p/ levar event_id + UTMs (pronto p/ CAPI) */
+        self.track('PageView');
+
+        /* ViewContent — 5s: filtra bounce, marca visita qualificada (público frio) */
+        setTimeout(function(){ self.track('ViewContent',{value:0.5,currency:'BRL'},{once:true}); },5000);
+
+        /* Tempo na página → temperatura do público (retargeting) */
+        setTimeout(function(){ self.track('Engaged30s',{engagement_level:'warm'},{once:true}); },30000);
+        setTimeout(function(){ self.track('Engaged60s',{engagement_level:'hot'},{once:true}); },60000);
+
+        /* Profundidade de scroll → público por interesse de leitura */
+        var marks=[50,75,90], hit={};
+        window.addEventListener('scroll',function(){
+          var h=document.documentElement.scrollHeight-window.innerHeight;
+          if(h<=0) return;
+          var p=(window.scrollY/h)*100;
+          marks.forEach(function(m){
+            if(!hit[m] && p>=m){ hit[m]=true; self.track('ScrollDepth',{scroll_depth:m}); }
+          });
+        },{passive:true});
+
+        document.addEventListener('DOMContentLoaded',function(){
+          var btn=document.getElementById('cta-btn');
+          if(!btn) return;
+
+          /* CTA entrou na tela (intenção — funciona no mobile, ≠ hover) */
+          if('IntersectionObserver' in window){
+            var io=new IntersectionObserver(function(ents){
+              ents.forEach(function(en){
+                if(en.isIntersecting){ self.track('CTAView',{button:'entrar_grupo'},{once:true}); io.disconnect(); }
+              });
+            },{threshold:0.5});
+            io.observe(btn);
+          }
+
+          /* Hover (desktop) */
+          btn.addEventListener('mouseenter',function(){
+            self.track('CTAHover',{button:'entrar_grupo'},{once:true});
+          });
+
+          /* CLIQUE no CTA = CONVERSÃO PRINCIPAL (Lead) — otimize campanhas por este evento */
+          btn.addEventListener('click',function(){
+            self.track('Lead',{
+              value:1.00, currency:'BRL',
+              predicted_ltv:50.00,
+              button_label:'Entrar no Grupo',
+              destination:'whatsapp_group'
+            });
+          });
+        });
+      }
+    };
+    _itx.init();
+  })();
+  </script>
+  <noscript>
+    <img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1547627079038261&ev=PageView&noscript=1"/>
+  </noscript>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Montserrat:wght@400;500;600;700;800;900&family=Oswald:wght@600;700&family=Steel+Race&family=Orbitron:wght@700;900&family=Exo+2:wght@700;800;900&family=Audiowide&family=Press+Start+2P&family=Oxanium:wght@700;800&family=Chakra+Petch:ital,wght@1,700;1,800&family=Big+Shoulders+Display:wght@800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --orange:#E8351A;
+      --orange-dark:#C42C14;
+      --orange-bg:rgba(232,53,26,0.08);
+      --black:#111111;
+      --gray:#505050;
+      --gray-light:#888888;
+      --bg:#F4F4F4;
+      --card:#FFFFFF;
+      --border:#E0E0E0;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{
+      min-height:100vh;
+      background-color:var(--bg);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      font-family:'Montserrat', sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
+    .container{ max-width:896px; width:100%; padding:48px 0; }
+
+    /* HERO */
+    .hero{
+      text-align:center;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:28px;
+      margin-bottom:52px;
+    }
+
+    /* Avatar — borda laranja */
+    .avatar-wrap{
+      width:128px; height:128px;
+      border-radius:9999px;
+      background:#fff;
+      display:flex; align-items:center; justify-content:center;
+      box-shadow:0 0 0 3px var(--orange), 0 8px 24px rgba(0,0,0,0.14);
+      overflow:hidden; flex-shrink:0; padding:10px;
+    }
+    .avatar-wrap img{ width:100%; height:100%; object-fit:contain; display:block; }
+
+    .text-block{ display:flex; flex-direction:column; gap:14px; }
+
+    h1{
+      font-family:'Big Shoulders Display', sans-serif;
+      font-size:58px; font-weight:900; font-style:normal;
+      line-height:1.05; text-transform:uppercase; letter-spacing:2px;
+      color:var(--black);
+    }
+    h1 em{ font-style:normal; color:var(--orange); }
+
+    .subtitle{ font-family:'Montserrat',sans-serif; font-size:17px; font-weight:600; color:var(--gray); line-height:1.6; max-width:520px; margin:0 auto; }
+
+    /* Badge — pill arredondado, minimalista */
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      background:#fff;
+      border:1px solid rgba(232,53,26,0.35);
+      border-radius:50px;
+      padding:10px 20px;
+      font-family:'Montserrat',sans-serif;
+      font-size:12px; font-weight:700; letter-spacing:0.04em;
+      text-transform:uppercase; color:var(--gray);
+      box-shadow: 0 2px 8px rgba(232,53,26,0.08);
+    }
+
+    /* CTA — verde WhatsApp */
+    .cta-btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:12px;
+      background:#25D366; color:#fff;
+      font-family:'Oswald',sans-serif;
+      font-size:22px; font-weight:700; letter-spacing:0.06em;
+      text-transform:uppercase;
+      padding:22px 52px; border-radius:50px; border:none;
+      cursor:pointer; text-decoration:none;
+      box-shadow: 0 4px 18px rgba(37,211,102,0.35);
+      transition:background .18s, transform .12s, box-shadow .18s;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .cta-btn:hover{ background:#1ebe5d; transform:translateY(-2px); box-shadow:0 8px 24px rgba(37,211,102,0.45); }
+    .cta-btn:active{ transform:translateY(0); }
+    .cta-btn svg{ width:24px; height:24px; flex-shrink:0; }
+
+    /* FEATURES — cards arredondados, sem numeração */
+    .features{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .feature{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:26px 22px 24px;
+      display:flex; flex-direction:column; gap:8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .feat-label{
+      font-family:'Bebas Neue',sans-serif;
+      font-size:14px; letter-spacing:0.2em;
+      color:var(--orange);
+    }
+    .feat-title{ font-family:'Oswald',sans-serif; font-size:17px; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; color:var(--black); line-height:1.2; }
+    .feat-text{ font-family:'Montserrat',sans-serif; font-size:13px; font-weight:500; color:var(--gray-light); line-height:1.6; }
+
+    @media(max-width:640px){
+      h1{ font-size:36px; letter-spacing:1px; }
+      .subtitle{ font-size:16px; }
+      .features{ grid-template-columns:1fr; gap:10px; }
+      .cta-btn{ font-size:18px; padding:20px 36px; width:100%; max-width:380px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="hero">
+
+    <!-- Logo ITX embutida como base64 — funciona offline e sem CDN -->
+    <div class="avatar-wrap">
+      <img src="data:image/jpeg;base64,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" alt="ITX Gamer" />
+    </div>
+
+    <div class="text-block">
+      <h1>Quem pesquisa preço<br>antes de comprar<br><em>já está aqui.</em></h1>
+      <p class="subtitle">Garimpamos os melhores preços do mercado e entregamos direto pra você com link de desconto e ainda mais barato na retirada nas nossas lojas.</p>
+    </div>
+
+    <div class="badge">
+      Pague mais barato retirando em SJC ou Campinas
+    </div>
+
+    <a
+      id="cta-btn"
+      class="cta-btn"
+      href="https://chat.whatsapp.com/K2wVntV8lGKLOCTDyJmeLa?mode=gi_t"
+      target="_blank"
+      rel="noopener"
+    >
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+      </svg>
+      Entrar no Grupo
+    </a>
+
+  </div>
+
+  <!-- FEATURES -->
+  <div class="features">
+
+    <div class="feature">
+      <span class="feat-label">Preço</span>
+      <span class="feat-title">Sempre abaixo do mercado</span>
+      <span class="feat-text">Links diretos com desconto real. Sem markup, sem enrolação.</span>
+    </div>
+
+    <div class="feature">
+      <span class="feat-label">Retirada</span>
+      <span class="feat-title">Ainda mais barato na loja</span>
+      <span class="feat-text">Desconto exclusivo pra quem retira em São José dos Campos ou Campinas.</span>
+    </div>
+
+    <div class="feature">
+      <span class="feat-label">Comunidade</span>
+      <span class="feat-title">Oferta nova, todo dia</span>
+      <span class="feat-text">Hardware, periféricos e acessórios gamer. Direto no grupo, antes de todo mundo.</span>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>
